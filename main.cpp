@@ -128,6 +128,22 @@ void test_zgemm()
 void on_shell_mult(gsl_matrix_complex* m1, gsl_matrix_complex* m2, 
         gsl_matrix_complex* res)
 {
+    /*
+     * This function implements the onshell multiplication, meaning 
+     * that the matrix multiplixation does not include the last 
+     * column/row of the matrix. This is achieved by first multiplying
+     * the matrices as usual and then subtracting the error that is 
+     * induced. The time lost is negligable compared to just doing
+     * an ordinary multiplication.
+     *
+     * m1, m2, res needs to be distinct matrices. You cannot have eg.
+     * m1 <- m1*m2
+     *
+     * This function is tested againts on_shell_mult_bf() which is a loop
+     * brute force verion of the original sum that we want to compute.
+     */
+
+    // Multiply as usual
     gsl_complex alpha = gsl_complex_rect(1,0);
     gsl_complex beta = gsl_complex_rect(0,0);
     gsl_blas_zgemm(CblasNoTrans, CblasNoTrans, alpha, m1,m2,beta,res);
